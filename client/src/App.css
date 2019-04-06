@@ -29,6 +29,10 @@ div {
   font-weight: bold;
 }
 
+.buttons {
+  justify-content: left;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

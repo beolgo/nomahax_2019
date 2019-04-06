@@ -11,17 +11,18 @@ import {
 } from "react-simple-maps"
 import { scaleLinear } from "d3-scale"
 import request from "axios"
-import Slider from "react-input-slider";
+import Slider from "react-input-slider"
+import { Motion, spring } from "react-motion"
 
 const wrapperStyles = {
     width: "100%",
-    maxWitdth: 980,
+    maxWitdth: 1080,
     margin: "0 auto",
 };
 
 const countryScale = scaleLinear()
     .domain([0, 90.0])
-    .range([4,100]);
+    .range([2,250]);
 
 class BasicMap extends Component {
     constructor() {
@@ -29,12 +30,17 @@ class BasicMap extends Component {
         this.state = {
             energy: [],
             coords: [],
+            center: [0,20],
             year: 1980,
+            zoom: 1.5,
             activeCountry: -1
         };
         this.fetchEnergy = this.fetchEnergy.bind(this);
         this.fetchCoords = this.fetchCoords.bind(this);
         this.handleHover = this.handleHover.bind(this);
+        this.handleZoomIn = this.handleZoomIn.bind(this)
+        this.handleZoomOut = this.handleZoomOut.bind(this)
+        this.handleReset = this.handleReset.bind(this)
     }
     componentDidMount() {
         this.fetchEnergy();
@@ -60,12 +66,28 @@ class BasicMap extends Component {
             })
     }
     handleHover(marker, event){
-        console.log("Marker data: ", marker);
+        // console.log("Marker data: ", marker);
         // this.setState({
         //     activeCountry: marker.Country
         // });
         //
         // console.log("Active country code: ", this.state.activeCountry)
+    }
+    handleZoomIn() {
+        this.setState({
+            zoom: this.state.zoom * 2,
+        })
+    }
+    handleZoomOut() {
+        this.setState({
+            zoom: this.state.zoom / 2,
+        })
+    }
+    handleReset() {
+        this.setState({
+            center: [0,20],
+            zoom: 1.5,
+        })
     }
 
     render() {
@@ -80,19 +102,43 @@ class BasicMap extends Component {
 
             return (
                 <div style={wrapperStyles}>
+                    <div class={"buttons"}>
+                        <button onClick={this.handleZoomIn}>
+                            { "Zoom in" }
+                        </button>
+                        <button onClick={this.handleZoomOut}>
+                            { "Zoom out" }
+                        </button>
+                        <button onClick={this.handleReset}>
+                            { "Reset" }
+                        </button>
+                    </div>
+                    <Motion
+                        defaultStyle={{
+                            zoom: 1,
+                            x: 0,
+                            y: 20,
+                        }}
+                        style={{
+                            zoom: spring(this.state.zoom, {stiffness: 210, damping: 20}),
+                            x: spring(this.state.center[0], {stiffness: 210, damping: 20}),
+                            y: spring(this.state.center[1], {stiffness: 210, damping: 20}),
+                        }}
+                    >
+                        {({zoom,x,y}) => (
                     <ComposableMap
                         projectionConfig={{
                             scale: 205,
                             rotation: [-11,0,0],
                         }}
-                        width={980}
-                        height={551}
+                        width={1980}
+                        height={800}
                         style={{
                             width: "100%",
                             height: "auto",
                         }}
                     >
-                        <ZoomableGroup center={[0,20]} disablePanning>
+                        <ZoomableGroup center={[x,y]} zoom={zoom}>
                             <Geographies geography="https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-50m.json">
                                 {(geographies, projection) => geographies.map((geography, i) => geography.id !== "ATA" && (
                                     <Geography
@@ -133,7 +179,7 @@ class BasicMap extends Component {
                                                 cx={0}
                                                 cy={0}
                                                 r={countryScale(country.value)}
-                                                fill="rgba(255,251,0,0.5)"
+                                                fill="rgba(255,251,0,0.4)"
                                                 stroke="#607D8B"
                                                 strokeWidth="2"
                                             />
@@ -165,10 +211,14 @@ class BasicMap extends Component {
                             </Annotations>
                         </ZoomableGroup>
                     </ComposableMap>
+                        )}
+                    </Motion>
                     <div>
                         <Slider
                             styles={{
-
+                                active: {
+                                    backgroundColor: "#3E8745"
+                                }
                             }}
                             axis="x"
                             xmin={1980}
