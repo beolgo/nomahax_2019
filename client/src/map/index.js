@@ -11,6 +11,7 @@ import {
 } from "react-simple-maps"
 import { scaleLinear } from "d3-scale"
 import request from "axios"
+import Slider from "react-input-slider";
 
 const wrapperStyles = {
     width: "100%",
@@ -20,7 +21,7 @@ const wrapperStyles = {
 
 const countryScale = scaleLinear()
     .domain([0, 90.0])
-    .range([4,10]);
+    .range([4,100]);
 
 class BasicMap extends Component {
     constructor() {
@@ -28,14 +29,17 @@ class BasicMap extends Component {
         this.state = {
             energy: [],
             coords: [],
-            year: "a2008"
+            year: 1980,
+            activeCountry: -1
         };
         this.fetchEnergy = this.fetchEnergy.bind(this);
         this.fetchCoords = this.fetchCoords.bind(this);
+        this.handleHover = this.handleHover.bind(this);
     }
     componentDidMount() {
         this.fetchEnergy();
         this.fetchCoords();
+        this.handleHover();
     }
     fetchEnergy() {
         request
@@ -55,6 +59,14 @@ class BasicMap extends Component {
                 })
             })
     }
+    handleHover(marker, event){
+        console.log("Marker data: ", marker);
+        // this.setState({
+        //     activeCountry: marker.Country
+        // });
+        //
+        // console.log("Active country code: ", this.state.activeCountry)
+    }
 
     render() {
 
@@ -62,9 +74,9 @@ class BasicMap extends Component {
 
             const coords = this.state.coords;
             this.state.energy.forEach((value, index) => {
-                coords[index].value = value[this.state.year];
+                coords[index].value = value["a" + this.state.year];
             });
-            console.log(coords);
+            // console.log(coords);
 
             return (
                 <div style={wrapperStyles}>
@@ -89,23 +101,23 @@ class BasicMap extends Component {
                                         projection={projection}
                                         style={{
                                             default: {
-                                                fill: "#ECEFF1",
+                                                fill: "#3E8745",
                                                 stroke: "#607D8B",
                                                 strokeWidth: 0.75,
                                                 outline: "none",
                                             },
                                             hover: {
-                                                fill: "#607D8B",
+                                                fill: "#85c87c",
                                                 stroke: "#607D8B",
                                                 strokeWidth: 0.75,
                                                 outline: "none",
                                             },
-                                            pressed: {
-                                                fill: "#FF5722",
-                                                stroke: "#607D8B",
-                                                strokeWidth: 0.75,
-                                                outline: "none",
-                                            },
+                                            // pressed: {
+                                            //     fill: "#FF5722",
+                                            //     stroke: "#607D8B",
+                                            //     strokeWidth: 0.75,
+                                            //     outline: "none",
+                                            // },
                                         }}
                                     />
                                 ))}
@@ -115,12 +127,13 @@ class BasicMap extends Component {
                                     coords.map((country, i) => (
                                         <Marker key={i}
                                                 marker={country}
+                                                onMouseEnter={ this.handleHover }
                                         >
                                             <circle
                                                 cx={0}
                                                 cy={0}
                                                 r={countryScale(country.value)}
-                                                fill="rgba(255,87,34,0.8)"
+                                                fill="rgba(255,251,0,0.5)"
                                                 stroke="#607D8B"
                                                 strokeWidth="2"
                                             />
@@ -130,7 +143,9 @@ class BasicMap extends Component {
                             </Markers>
                             <Annotations>
                                 {
+
                                     this.state.coords.map((country, i) => (
+
                                         <Annotation
                                             key={i}
                                             dx={ 0 }
@@ -138,16 +153,36 @@ class BasicMap extends Component {
                                             subject={ country.coordinates }
                                             strokeWidth={ 1 }
                                         >
+
                                             <text>
-                                                {/*{ country.Country }*/}
+                                                {/*{coords[this.state.activeCountry].value}*/}
                                             </text>
+
                                         </Annotation>
+
                                     ))
                                 }
                             </Annotations>
                         </ZoomableGroup>
                     </ComposableMap>
+                    <div>
+                        <Slider
+                            styles={{
+
+                            }}
+                            axis="x"
+                            xmin={1980}
+                            xmax={2008}
+                            x={this.state.year}
+                            onChange={({ x }) => this.setState({year: x})}
+                        />
+                        <br/>
+                        <div class="year_text">
+                        Current year: {this.state.year}
+                        </div>
+                    </div>
                 </div>
+
             )
         }
 
