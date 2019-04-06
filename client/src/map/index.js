@@ -22,7 +22,7 @@ const wrapperStyles = {
 
 const countryScale = scaleLinear()
     .domain([0, 90.0])
-    .range([2,250]);
+    .range([4,300]);
 
 class BasicMap extends Component {
     constructor() {
@@ -179,7 +179,7 @@ class BasicMap extends Component {
                                                 cx={0}
                                                 cy={0}
                                                 r={countryScale(country.value)}
-                                                fill="rgba(255,251,0,0.4)"
+                                                fill="rgba(255,251,0,0.275)"
                                                 stroke="#607D8B"
                                                 strokeWidth="2"
                                             />
