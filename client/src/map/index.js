@@ -6,6 +6,8 @@ import {
     Geography,
     Markers,
     Marker,
+    Annotations,
+    Annotation,
 } from "react-simple-maps"
 import { scaleLinear } from "d3-scale"
 import request from "axios"
@@ -36,7 +38,7 @@ class BasicMap extends Component {
     }
     fetchEnergy() {
         request
-            .get("./countries.json")
+            .get("https://raw.githubusercontent.com/beolgo/nomahax_2019/warreng/client/src/map/countries.json")
             .then(res => {
                 this.setState({
                     energy:res.data,
@@ -45,7 +47,7 @@ class BasicMap extends Component {
     }
     fetchCoords() {
         request
-            .get("./coords.json")
+            .get("https://raw.githubusercontent.com/beolgo/nomahax_2019/warreng/client/src/map/coords.json")
             .then(res => {
                 this.setState({
                     coords:res.data,
@@ -100,20 +102,37 @@ class BasicMap extends Component {
                         </Geographies>
                         <Markers>
                             {
-                                this.state.energy.map((country, i) => (
+                                this.state.coords.map((country, i) => (
                                     <Marker key={i} marker={country}>
-                                        <circle
-                                            cx={0}
-                                            cy={0}
-                                            r={countryScale(country.a2008)}
-                                            fill="rgba(255,87,34,0.8)"
-                                            stroke="#607D8B"
-                                            strokeWidth="2"
-                                        />
+                                        {/*<circle*/}
+                                        {/*    cx={0}*/}
+                                        {/*    cy={0}*/}
+                                        {/*    r={countryScale(country.a2008)}*/}
+                                        {/*    fill="rgba(255,87,34,0.8)"*/}
+                                        {/*    stroke="#607D8B"*/}
+                                        {/*    strokeWidth="2"*/}
+                                        {/*/>*/}
                                     </Marker>
                                 ))
                             }
                         </Markers>
+                        <Annotations>
+                            {
+                                this.state.coords.map((country, i) => (
+                                    <Annotation
+                                        key={i}
+                                        dx={ 10 }
+                                        dy={ -10 }
+                                        subject={ country.coordinates }
+                                        strokeWidth={ 1 }
+                                    >
+                                        <text>
+                                            { country.Country }
+                                        </text>
+                                    </Annotation>
+                                ))
+                            }
+                        </Annotations>
                     </ZoomableGroup>
                 </ComposableMap>
             </div>
