@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background-color: #7FCFD7;
 }
 
 .App-logo {
@@ -23,6 +24,11 @@
   color: #61dafb;
 }
 
+div {
+  text-shadow: 2px 2px 0px rgba(62,135,69,0.24);
+  font-weight: bold;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -30,4 +36,12 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+#CountryInfo {
+
+  width: 50%;
+  background-color: #6666ff;
+  justify-content: left;
+  display: flex;
 }

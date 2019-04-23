@@ -2,11 +2,11 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 4000;
 
-const mysql = require('mysql');
-const conn = mysql.createConnection({
-	host : "localhost",
-	user : "root",
-	password : "cheese88",
+ const mysql = require('mysql');
+ const conn = mysql.createConnection({
+ 	host : "localhost",
+ 	user : "root",
+ 	password : "cheese88",
 	database : "NomaHacks"
 });
 
