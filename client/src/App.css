@@ -40,8 +40,8 @@ div {
 
 #CountryInfo {
 
-  width: 50%;
+  width: 25%;
+  height: 100px;
   background-color: #6666ff;
-  justify-content: left;
-  display: flex;
+  justify-content: left;  
 }

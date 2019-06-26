@@ -9,14 +9,15 @@ class App extends Component {
   state = {
     data: null
   };
-
+  
+  /*
   componentDidMount() {
     // call our fetch below once mounted
     this.callBackendAPI()
       .then(res => this.setState({ data: res.express }))
       .catch(err => console.log(err));
   }
-
+  
   callBackendAPI  = async () => {
     const response = await fetch('/express_backend');
     const body = await response.json();
@@ -26,7 +27,7 @@ class App extends Component {
     }
     return body;
   };
-
+  */
 
   render() {
     return (

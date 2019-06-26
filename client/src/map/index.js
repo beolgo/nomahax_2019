@@ -12,6 +12,7 @@ import {
 import { scaleLinear } from "d3-scale"
 import request from "axios"
 import Slider from "react-input-slider";
+import SideBarInfo from "./SideBarInfo.js"
 
 const wrapperStyles = {
     width: "100%",
@@ -67,29 +68,70 @@ class BasicMap extends Component {
             })
     }
     handleHover(marker, event){
-        //console.log("Marker data: ", marker);
-        // this.setState({
-        //     activeCountry: marker.Country
-        // });
-        //
-        // console.log("Active country code: ", this.state.activeCountry)
         let pop_up = document.getElementById("CountryInfo");
         if (marker) {
             //pop_up.innerHTML = this.convertToString(JSON.stringify(marker));
             var arr = this.convertToString(JSON.stringify(marker));
             let send_arr = arr.split(" ");
-            //console.log(arr);
-            for (var i = 0; i < send_arr.length; i++) {
-                //let cell = document.createElement("td");
-                //cell.innerHTML = send_arr[i];
-                //pop_up.appendChild(cell);
-                //pop_up.innerHTML = cell;
-                console.log(send_arr[i]);
+            let cur_name = " ";
+            let cur_coords = " ";
+            let cur_val = 0;
+
+            //console.log(send_arr);
+            var info = "";
+            var info_arr = "";
+            for (var i = 0; i < send_arr.length; i++) 
+            {
+                
+                if (send_arr[i] !== "")
+                {
+                    info+=send_arr[i] + " ";
+                }
+            }
+            info_arr = info.replace("[", "").replace("]", "");
+            let info_arr2 = info_arr.split(" ");
+            //console.log(info.split(" "));
+            //console.log(info_arr2);
+            //console.log(info_arr2.length);
+            let got_cords = false;
+
+            
+            for (var j = 0; j < info_arr2.length; j++)
+            {
+                //console.log(info_arr[j]);
+                if (typeof info_arr2[j] === "string" && isNaN(info_arr2[j]))
+                {
+                    cur_name += info_arr2[j] + " ";
+                }
+            }
+            cur_val = info_arr2[info_arr2.length-2];
+            for (var k = 0; k < info_arr2.length-2; k++)
+            {
+                if (!isNaN(info_arr2[k]))
+                {
+                    cur_coords += info_arr2[k] + " ";
+                }
             }
             
-            pop_up.innerHTML = arr;            
+            
+            //pop_up.innerHTML = arr;
+            
+            var popUpBox = React.createElement(
+                'SideBarInfo',
+                {
+                    name: cur_name,
+                    coords: cur_coords,
+                    val: cur_val
+                },
+                this.props.children
+            );
+
+            //console.log(popUpBox);
+            pop_up.innerHTML = popUpBox.props.name + "<br>" + popUpBox.props.coords + "<br>" + popUpBox.props.val;
+            //pop_up.innerHTML = <SideBarInfo name={cur_name} coords={cur_coords} val={cur_val}/>
+                    
         }
-        //document.body.appendChild(pop_up);
+        //document.body.appendChild(popUpBox);
     }
 
     render() {
@@ -202,23 +244,22 @@ class BasicMap extends Component {
                         />
                         <br/>
                         <div className="year_text">
-                        Current year: {this.state.year}
+                            Current year: {this.state.year}
                         </div>
                     </div>
-                        <p id="CountryInfo">
-                            <table>
-                                <tr /*id="CountryInfo"*/>
-                                </tr>
-                            </table>
-                        </p>
+                    <div id="CountryInfo">
+
+                    </div>
+                        
                 </div>
 
             )
-        }
+        }// if closing
 
-        return <div>Loading...</div>
+        return <div>Loading...</div> // this is to return a loading screen before the actual component loads
 
-    }
+    }// render closing
 }
 
-export default BasicMap
+export default BasicMap;
+
